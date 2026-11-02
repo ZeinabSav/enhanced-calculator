@@ -7,6 +7,7 @@ from config import PRECISION, AUTOSAVE, CSV_PATH
 from exceptions import OperationError, ValidationError
 
 history_manager = HistoryManager()
+
 observers = [LoggingObserver()]
 if AUTOSAVE:
     observers.append(AutoSaveObserver(CSV_PATH))
@@ -14,13 +15,15 @@ if AUTOSAVE:
 
 def print_help():
     print("Commands:")
-    print("  add, subtract, multiply, divide, power, root, modulus, int_divide, percent, abs_diff")
-    print("  history, undo, redo, clear, help, exit")
+    print("add, subtract, multiply, divide, power, root")
+    print("modulus, int_divide, percent, abs_diff")
+    print("history, clear, undo, redo, help, exit")
 
 
 def parse_numbers(args):
     if len(args) < 2:
         raise ValidationError("Need two numbers")
+
     try:
         a = float(args[0])
         b = float(args[1])
@@ -31,9 +34,11 @@ def parse_numbers(args):
 
 def main():
     print("Enhanced Calculator REPL. Type 'help' for commands.")
+
     while True:
         try:
             cmd = input("> ").strip().split()
+
             if not cmd:
                 continue
 
@@ -41,48 +46,56 @@ def main():
 
             if name == "exit":
                 break
+
             elif name == "help":
                 print_help()
+
             elif name == "history":
-                for e in history_manager.get_history():
-                    print(e)
+                for item in history_manager.get_history():
+                    print(item)
+
             elif name == "clear":
                 history_manager.clear()
                 print("History cleared.")
+
             elif name == "undo":
-                e = history_manager.undo()
-                print("Undo:", e if e else "Nothing to undo")
+                item = history_manager.undo()
+                print("Undo:", item if item else "Nothing to undo")
+
             elif name == "redo":
-                e = history_manager.redo()
-                print("Redo:", e if e else "Nothing to redo")
-           
-           elif command == "percent":
-    a = float(parts[1])
-    b = float(parts[2])
-    result = percent(a, b)
-    print(result)
+                item = history_manager.redo()
+                print("Redo:", item if item else "Nothing to redo")
 
             else:
                 op = get_operation(name)
+
                 if op is None:
                     raise OperationError(f"Unknown operation: {name}")
 
                 a, b = parse_numbers(cmd[1:])
+
                 result = op.execute(a, b)
-                result_rounded = round(result, PRECISION)
-                entry = history_manager.add_entry(name, a, b, result_rounded)
+                result = round(result, PRECISION)
 
-                for obs in observers:
-                    obs.update(entry)
+                entry = history_manager.add_entry(
+                    name,
+                    a,
+                    b,
+                    result
+                )
 
-                print(result_rounded)
+                for observer in observers:
+                    observer.update(entry)
+
+                print(result)
 
         except (OperationError, ValidationError, ZeroDivisionError) as e:
             print("Error:", e)
+
         except KeyboardInterrupt:
+            print("\nExiting...")
             break
 
-def percent(a, b):
-    if b == 0:
-        raise ValueError("Cannot divide by zero.")
-    return (a / b) * 100
+
+if __name__ == "__main__":
+    main()
