@@ -55,6 +55,13 @@ def main():
             elif name == "redo":
                 e = history_manager.redo()
                 print("Redo:", e if e else "Nothing to redo")
+           
+           elif command == "percent":
+    a = float(parts[1])
+    b = float(parts[2])
+    result = percent(a, b)
+    print(result)
+
             else:
                 op = get_operation(name)
                 if op is None:
@@ -75,6 +82,7 @@ def main():
         except KeyboardInterrupt:
             break
 
-
-if __name__ == "__main__":
-    main()
+def percent(a, b):
+    if b == 0:
+        raise ValueError("Cannot divide by zero.")
+    return (a / b) * 100
