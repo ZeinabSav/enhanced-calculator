@@ -67,11 +67,11 @@ def get_operation(name: str) -> Operation | None:
         "percent": Percent(),
         "abs_diff": AbsDiff(),
    
-   def percent(a, b):
-    if b == 0:
-        raise ValueError("Cannot divide by zero.")
-    return (a / b) * 100
-
+  class Percent(Operation):
+    def execute(self, a, b):
+        if b == 0:
+            raise ValueError("Cannot divide by zero")
+        return (a / b) * 100
 
     }
     return ops.get(name)
