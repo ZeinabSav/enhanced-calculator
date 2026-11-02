@@ -35,3 +35,13 @@ def test_percent():
 
 def test_abs_diff():
     assert AbsDiff().execute(10, 3) == 7
+
+import pytest
+from operations import Percent
+
+def test_percent():
+    assert Percent().execute(50, 100) == 50
+
+def test_percent_zero():
+    with pytest.raises(ValueError):
+        Percent().execute(10, 0)
