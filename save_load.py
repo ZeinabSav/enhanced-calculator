@@ -1,12 +1,16 @@
-import json
+import pandas as pd
+
 
 def save_history(history):
-    with open("history.json", "w") as f:
-        json.dump(history, f)
+    df = pd.DataFrame(history)
+    df.to_csv("history.csv", index=False)
+
 
 def load_history():
     try:
-        with open("history.json", "r") as f:
-            return json.load(f)
+        df = pd.read_csv("history.csv")
+        return df.values.tolist()
     except FileNotFoundError:
+        return []
+    except Exception:
         return []
