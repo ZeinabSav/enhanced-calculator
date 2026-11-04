@@ -1,5 +1,5 @@
 # main.py
-
+from colorama import Fore, Style
 from operations import get_operation
 from history import HistoryManager
 from logger import LoggingObserver, AutoSaveObserver
@@ -87,10 +87,10 @@ def main():
                 for observer in observers:
                     observer.update(entry)
 
-                print(result)
+                print(Fore.GREEN + str(result) + Style.RESET_ALL)
 
         except (OperationError, ValidationError, ZeroDivisionError) as e:
-            print("Error:", e)
+            print(Fore.RED + f"Error: {e}" + Style.RESET_ALL)
 
         except KeyboardInterrupt:
             print("\nExiting...")
