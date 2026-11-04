@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from main import parse_numbers
 import pytest
 
@@ -31,3 +32,26 @@ def test_parse_numbers_decimal():
 
     assert a == 2.5
     assert b == 3.5
+
+    from unittest.mock import patch
+from main import main
+
+
+def test_main_exit():
+    with patch("builtins.input", side_effect=["exit"]):
+        main()
+
+
+def test_main_help():
+    with patch("builtins.input", side_effect=["help", "exit"]):
+        main()
+
+
+def test_main_history():
+    with patch("builtins.input", side_effect=["history", "exit"]):
+        main()
+
+
+def test_main_bad_command():
+    with patch("builtins.input", side_effect=["fakecommand", "exit"]):
+        main()
